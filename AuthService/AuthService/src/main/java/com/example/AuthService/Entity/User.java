@@ -1,4 +1,4 @@
-package com.example.AuthService.UserEntity;
+package com.example.AuthService.Entity;
 
 
 import jakarta.persistence.Entity;
@@ -20,6 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private  String username;
+    private String password;
     private String role;
 
 

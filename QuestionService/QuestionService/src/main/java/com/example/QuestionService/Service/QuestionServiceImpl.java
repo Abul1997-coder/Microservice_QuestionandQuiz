@@ -1,6 +1,7 @@
 package com.example.QuestionService.Service;
 
 import com.example.QuestionService.Entity.Question;
+import com.example.QuestionService.Kafka.KafkaProducerService;
 import com.example.QuestionService.Repository.QuestionRepository;
 import org.springframework.stereotype .Service;
 
@@ -9,19 +10,32 @@ import java.util.List;
 @Service
 public class QuestionServiceImpl  implements QuestionService {
 
-private final  QuestionRepository repository;
 
-public QuestionServiceImpl(QuestionRepository repository)
+    private final KafkaProducerService kafkaProducerService;       // Kafka
+private final  QuestionRepository repository;                     // Question
+
+public QuestionServiceImpl(QuestionRepository repository, KafkaProducerService kafkaProducerService)       // Both Constructor Kafka and Question
 {
     this.repository = repository;
+    this.kafkaProducerService = kafkaProducerService;
 }
+
 
 
 
 //Save the all question
     @Override
-    public Question saveQuestion(Question question) {
+  /*  public Question saveQuestion(Question question) {
         return repository.save(question);
+    }*/
+
+    public Question saveQuestion(Question question){
+      Question saveQuestion = repository.save(question);
+
+      kafkaProducerService.sendMessage(
+              saveQuestion.getQuestionTitle()
+      );
+      return saveQuestion;
     }
 
 
